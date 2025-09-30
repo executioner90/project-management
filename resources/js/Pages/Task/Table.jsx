@@ -24,7 +24,11 @@ export default function Table({
             delete queryParams[name];
         }
 
-        router.get(route('task.index'), queryParams);
+        router.get(
+            window.location.pathname,
+            queryParams,
+            { preserveScroll: true }
+        );
     }
 
     const onKeyPress = (name, e) => {
@@ -41,7 +45,11 @@ export default function Table({
             queryParams.sort_direction = 'asc';
         }
 
-        router.get(route('task.index'), queryParams);
+        router.get(
+            window.location.pathname,
+            queryParams,
+            { preserveScroll: true }
+        );
     }
 
     return (
