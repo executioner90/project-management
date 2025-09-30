@@ -16,7 +16,7 @@ class TaskController extends Controller
         $request->validate([
             'name' => ['nullable', 'string'],
             'status' => ['nullable', 'string', 'in:pending,completed,in_progress'],
-            'sort_field' => ['nullable', 'string', 'in:id,name,status,created_at,due_date'],
+            'sort_field' => ['nullable', 'string', 'in:id,name,status,priority,created_at,due_date'],
             'sort_direction' => ['nullable', 'string', 'in:asc,desc'],
         ]);
 

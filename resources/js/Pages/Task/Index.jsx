@@ -3,8 +3,6 @@ import {Head} from "@inertiajs/react";
 import TaskTable from "@/Pages/Task/Table.jsx";
 
 export default function Index({tasks, queryParams = null,}) {
-    queryParams = queryParams || {};
-
     return (
         <>
             <AuthenticatedLayout
