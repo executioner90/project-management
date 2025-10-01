@@ -17,8 +17,8 @@ export function searchFieldChanged(name, value, queryParams){
     );
 }
 
-export function onKeyPress(name, e){
+export function onKeyPress(name, e ,queryParams){
     if (e.key !== "Enter") return
 
-    searchFieldChanged(name, e.target.value);
+    searchFieldChanged(name, e.target.value, queryParams);
 }

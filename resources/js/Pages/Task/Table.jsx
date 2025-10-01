@@ -33,7 +33,7 @@ export default function Table({
                                 defaultValue={queryParams.name}
                                 placeholder="Task name"
                                 onBlur={e => searchFieldChanged('name', e.target.value, queryParams)}
-                                onKeyPress={e => onKeyPress('name', e)}
+                                onKeyPress={e => onKeyPress('name', e, queryParams)}
                             ></TextInput>
                         </th>
                         <th className="px-3 py-2">
