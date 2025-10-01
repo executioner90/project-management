@@ -120,7 +120,7 @@ class ProjectController extends Controller
         $name = $project->name;
 
         if ($project->image) {
-            Storage::disk('public')->delete("project/{$project->id}/{$project->getOriginal('image')}");
+            Storage::disk('public')->delete("project/{$project->id}/{$project->getRawOriginal('image')}");
         }
 
         $project->delete();
