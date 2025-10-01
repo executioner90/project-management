@@ -7,20 +7,35 @@ import SelectInput from "@/Components/SelectInput.jsx";
 import TableHead from "@/Components/TableHead.jsx";
 import {searchFieldChanged, onKeyPress} from "@/Table/filter.jsx";
 
-export default function Index({ projects, queryParams = {} }) {
+export default function Index({ projects, queryParams = {}, success }) {
     return (
         <>
             <AuthenticatedLayout
                 header={
-                    <h2 className="text-xl font-semibold leading-tight dark:bg-gray-800">
-                        Projects
-                    </h2>
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-xl font-semibold leading-tight dark:bg-gray-800">
+                            Projects
+                        </h2>
+
+                        <Link
+                            href={route('project.create')}
+                            className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600"
+                        >
+                            Add new project
+                        </Link>
+                    </div>
                 }
             >
                 <Head title="Projects" />
 
                 <div className="py-12 dark:bg-gray-900 dark:text-gray-100">
                     <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
+                        {success && (
+                            <div className="mb-4 bg-emerald-500 py-2 px-4 text-white rounded">
+                                {success}
+                            </div>
+                        )}
+
                         <div className="overflow-hidden bg-white dark:bg-gray-800 shadow-sm sm:rounded-lg">
                             <div className="p-6">
                                 <div className="overflow-auto">

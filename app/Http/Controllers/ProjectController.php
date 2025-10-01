@@ -7,12 +7,18 @@ use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Resources\ProjectResource;
 use App\Http\Resources\TaskResource;
 use App\Models\Project;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class ProjectController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): Response
     {
         $this->validatedGetRequest($request);
 
@@ -30,17 +36,34 @@ class ProjectController extends Controller
             ]);
     }
 
-    public function create()
+    public function create(): Response
     {
-        //
+        return Inertia::render('Project/Form');
     }
 
-    public function store(StoreProjectRequest $request)
+    public function store(StoreProjectRequest $request): RedirectResponse
     {
-        //
+        $validated = $request->validated();
+        $validated['created_by'] = Auth::id();
+        $image = Arr::pull($validated, 'image');
+
+        $project = Project::query()->create($validated);
+
+        if ($image instanceof UploadedFile) {
+            $imageOriginalName = $image->getClientOriginalName();
+            $imageOriginalName = preg_replace('/[^a-zA-Z0-9_.-]/', '_', $imageOriginalName);
+
+            $image->storeAs('project/' . $project->id , $imageOriginalName, 'public');
+            $project->update(['image' => $imageOriginalName]);
+        }
+
+        return Redirect::route('project.index')
+            ->with([
+                'success' => 'Project ' . $project->name . ' Created Successfully',
+            ]);
     }
 
-    public function show(Project $project, Request $request)
+    public function show(Project $project, Request $request): Response
     {
         $this->validatedGetRequest($request);
 
