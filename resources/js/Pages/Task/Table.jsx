@@ -7,51 +7,15 @@ import {
     TASK_STATUS_TEXT_MAP
 } from "@/constants.jsx";
 import TableHead from "@/Components/TableHead.jsx";
-import {Link, router} from "@inertiajs/react";
+import {Link} from "@inertiajs/react";
 import Pagination from "@/Components/Pagination.jsx";
+import { searchFieldChanged, onKeyPress } from '@/Table/filter.jsx';
 
 export default function Table({
     tasks,
     queryParams,
     hideProjectCol = false,
 }) {
-    queryParams = queryParams || {};
-
-    const searchFieldChanged = (name, value) => {
-        if (value) {
-            queryParams[name] = value;
-        } else {
-            delete queryParams[name];
-        }
-
-        router.get(
-            window.location.pathname,
-            queryParams,
-            { preserveScroll: true }
-        );
-    }
-
-    const onKeyPress = (name, e) => {
-        if (e.key !== "Enter") return
-
-        searchFieldChanged(name, e.target.value);
-    }
-
-    const sortChanged = (name) => {
-        if (name === queryParams.sort_field) {
-            queryParams.sort_direction = queryParams.sort_direction === 'asc' ? 'desc' : 'asc';
-        } else {
-            queryParams.sort_field = name;
-            queryParams.sort_direction = 'asc';
-        }
-
-        router.get(
-            window.location.pathname,
-            queryParams,
-            { preserveScroll: true }
-        );
-    }
-
     return (
         <>
             <div className="overflow-auto">
@@ -68,7 +32,7 @@ export default function Table({
                                 className="w-full"
                                 defaultValue={queryParams.name}
                                 placeholder="Task name"
-                                onBlur={e => searchFieldChanged('name', e.target.value)}
+                                onBlur={e => searchFieldChanged('name', e.target.value, queryParams)}
                                 onKeyPress={e => onKeyPress('name', e)}
                             ></TextInput>
                         </th>
@@ -76,7 +40,7 @@ export default function Table({
                             <SelectInput
                                 className="w-full"
                                 defaultValue={queryParams.status}
-                                onChange={e => searchFieldChanged('status', e.target.value)}
+                                onChange={e => searchFieldChanged('status', e.target.value, queryParams)}
                             >
                                 <option value="">Select status</option>
                                 {Object.entries(TASK_STATUS_TEXT_MAP).map(([key, label]) => (
@@ -97,9 +61,7 @@ export default function Table({
                     <tr className="text-nowrap">
                         <TableHead
                             name="id"
-                            sort_field={queryParams.sort_field}
-                            sort_direction={queryParams.sort_direction}
-                            sortChanged={sortChanged}
+                            queryParams={queryParams}
                         >
                             ID
                         </TableHead>
@@ -112,45 +74,35 @@ export default function Table({
 
                         <TableHead
                             name="name"
-                            sort_field={queryParams.sort_field}
-                            sort_direction={queryParams.sort_direction}
-                            sortChanged={sortChanged}
+                            queryParams={queryParams}
                         >
                             Name
                         </TableHead>
 
                         <TableHead
                             name="status"
-                            sort_field={queryParams.sort_field}
-                            sort_direction={queryParams.sort_direction}
-                            sortChanged={sortChanged}
+                            queryParams={queryParams}
                         >
                             Status
                         </TableHead>
 
                         <TableHead
                             name="priority"
-                            sort_field={queryParams.sort_field}
-                            sort_direction={queryParams.sort_direction}
-                            sortChanged={sortChanged}
+                            queryParams={queryParams}
                         >
                             Priority
                         </TableHead>
 
                         <TableHead
                             name="created_at"
-                            sort_field={queryParams.sort_field}
-                            sort_direction={queryParams.sort_direction}
-                            sortChanged={sortChanged}
+                            queryParams={queryParams}
                         >
                             Created AT
                         </TableHead>
 
                         <TableHead
                             name="due_date"
-                            sort_field={queryParams.sort_field}
-                            sort_direction={queryParams.sort_direction}
-                            sortChanged={sortChanged}
+                            queryParams={queryParams}
                         >
                             Due Date
                         </TableHead>

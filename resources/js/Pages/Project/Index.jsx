@@ -1,40 +1,13 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
-import {Head, Link, router} from "@inertiajs/react";
+import {Head, Link} from "@inertiajs/react";
 import Pagination from "@/Components/Pagination.jsx";
 import {PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP} from "@/constants.jsx";
 import TextInput from "@/Components/TextInput.jsx";
 import SelectInput from "@/Components/SelectInput.jsx";
 import TableHead from "@/Components/TableHead.jsx";
+import {searchFieldChanged, onKeyPress} from "@/Table/filter.jsx";
 
-export default function Index({ projects, auth, errors, queryParams = null }) {
-    queryParams = queryParams || {};
-    const searchFieldChanged = (name, value) => {
-        if (value) {
-            queryParams[name] = value;
-        } else {
-            delete queryParams[name];
-        }
-
-        router.get(route('project.index'), queryParams);
-    }
-
-    const onKeyPress = (name, e) => {
-        if (e.key !== "Enter") return
-
-        searchFieldChanged(name, e.target.value);
-    }
-
-    const sortChanged = (name) => {
-        if (name === queryParams.sort_field) {
-            queryParams.sort_direction = queryParams.sort_direction === 'asc' ? 'desc' : 'asc';
-        } else {
-            queryParams.sort_field = name;
-            queryParams.sort_direction = 'asc';
-        }
-
-        router.get(route('project.index'), queryParams);
-    }
-
+export default function Index({ projects, queryParams = {} }) {
     return (
         <>
             <AuthenticatedLayout
@@ -61,7 +34,7 @@ export default function Index({ projects, auth, errors, queryParams = null }) {
                                                     className="w-full"
                                                     defaultValue={queryParams.name}
                                                     placeholder="Project name"
-                                                    onBlur={e => searchFieldChanged('name', e.target.value)}
+                                                    onBlur={e => searchFieldChanged('name', e.target.value, queryParams)}
                                                     onKeyPress={e => onKeyPress('name', e)}
                                                 ></TextInput>
                                             </th>
@@ -69,7 +42,7 @@ export default function Index({ projects, auth, errors, queryParams = null }) {
                                                 <SelectInput
                                                     className="w-full"
                                                     defaultValue={queryParams.status}
-                                                    onChange={e => searchFieldChanged('status', e.target.value)}
+                                                    onChange={e => searchFieldChanged('status', e.target.value, queryParams)}
                                                 >
                                                     <option value="">Select status</option>
                                                     {Object.entries(PROJECT_STATUS_TEXT_MAP).map(([key, label]) => (
@@ -88,9 +61,7 @@ export default function Index({ projects, auth, errors, queryParams = null }) {
                                         <tr className="text-nowrap">
                                             <TableHead
                                                 name="id"
-                                                sort_field={queryParams.sort_field}
-                                                sort_direction={queryParams.sort_direction}
-                                                sortChanged={sortChanged}
+                                                queryParams={queryParams}
                                             >
                                                 ID
                                             </TableHead>
@@ -99,36 +70,28 @@ export default function Index({ projects, auth, errors, queryParams = null }) {
 
                                             <TableHead
                                                 name="name"
-                                                sort_field={queryParams.sort_field}
-                                                sort_direction={queryParams.sort_direction}
-                                                sortChanged={sortChanged}
+                                                queryParams={queryParams}
                                             >
                                                 Name
                                             </TableHead>
 
                                             <TableHead
                                                 name="status"
-                                                sort_field={queryParams.sort_field}
-                                                sort_direction={queryParams.sort_direction}
-                                                sortChanged={sortChanged}
+                                                queryParams={queryParams}
                                             >
                                                 Status
                                             </TableHead>
 
                                             <TableHead
                                                 name="created_at"
-                                                sort_field={queryParams.sort_field}
-                                                sort_direction={queryParams.sort_direction}
-                                                sortChanged={sortChanged}
+                                                queryParams={queryParams}
                                             >
                                                 Created AT
                                             </TableHead>
 
                                             <TableHead
                                                 name="due_date"
-                                                sort_field={queryParams.sort_field}
-                                                sort_direction={queryParams.sort_direction}
-                                                sortChanged={sortChanged}
+                                                queryParams={queryParams}
                                             >
                                                 Due Date
                                             </TableHead>

@@ -2,7 +2,7 @@ import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import {Head} from "@inertiajs/react";
 import TaskTable from "@/Pages/Task/Table.jsx";
 
-export default function Index({tasks, queryParams = null,}) {
+export default function Index({tasks, queryParams = {}}) {
     return (
         <>
             <AuthenticatedLayout
