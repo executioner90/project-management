@@ -1,4 +1,4 @@
-import {Head, Link, useForm} from "@inertiajs/react";
+import {Head, Link, router, useForm} from "@inertiajs/react";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
 import InputLabel from "@/Components/InputLabel.jsx";
 import TextInput from "@/Components/TextInput.jsx";
@@ -13,18 +13,21 @@ export default function Form({project = {}}) {
         description: project.description || "",
         due_date: project.due_date || "",
         status: project.status || "",
-        image: project.image || "",
+        image: "",
     });
 
     function onSubmit(e) {
         e.preventDefault();
 
         if (project.id) {
-            put(route('project.update', project));
+            data['_method'] = 'put';
+
+            router.post(route('project.update', project.id), data);
         } else {
             post(route('project.store'));
         }
     }
+
 
     return (
         <>
@@ -32,12 +35,12 @@ export default function Form({project = {}}) {
                 header={
                     <div className="flex justify-between items-center">
                         <h2 className="text-xl font-semibold leading-tight dark:bg-gray-800">
-                            Create new project
+                            {project.id ? 'Update' : 'Create'} new project {project.name || ''}
                         </h2>
                     </div>
                 }
             >
-                <Head title="Create new project"/>
+                <Head title={project.id ? `Update - ${project.name}` : 'Create new project'}/>
 
                 <div className="py-12 dark:bg-gray-900 dark:text-gray-100">
                     <div className="mx-auto max-w-7xl sm:px-6 lg:px-8">
@@ -46,6 +49,12 @@ export default function Form({project = {}}) {
                                 onSubmit={onSubmit}
                                 className="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg"
                             >
+                                {project.image && (
+                                    <div className="mb-4">
+                                        <img src={project.image} alt="Image" className="w-64"/>
+                                    </div>
+                                )}
+
                                 <div>
                                     <InputLabel htmlFor="image" value="Image"/>
 
@@ -101,7 +110,13 @@ export default function Form({project = {}}) {
                                         id="due_date"
                                         type="date"
                                         name="due_date"
-                                        value={data.due_date}
+                                        value={
+                                            data.due_date
+                                                ? new Date(data.due_date.split('-').reverse().join('-'))
+                                                    .toISOString()
+                                                    .slice(0, 10)
+                                                : ''
+                                        }
                                         className="mt-1 block w-full"
                                         onChange={(e) => {
                                             setData('due_date', e.target.value)
@@ -113,7 +128,7 @@ export default function Form({project = {}}) {
 
                                 <div className="mt-4">
                                     <InputLabel htmlFor="status" value="Status"/>
-
+                                    {data.status}
                                     <SelectInput
                                         id="status"
                                         className="mt-1 block w-full"
@@ -139,7 +154,7 @@ export default function Form({project = {}}) {
                                         Cancel
                                     </Link>
 
-                                    <button className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600">
+                                    <button disabled={processing} className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600">
                                         Submit
                                     </button>
                                 </div>

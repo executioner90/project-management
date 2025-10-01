@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
-import {Head, Link} from "@inertiajs/react";
+import {Head, Link, router} from "@inertiajs/react";
 import Pagination from "@/Components/Pagination.jsx";
 import {PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP} from "@/constants.jsx";
 import TextInput from "@/Components/TextInput.jsx";
@@ -8,6 +8,20 @@ import TableHead from "@/Components/TableHead.jsx";
 import {searchFieldChanged, onKeyPress} from "@/Table/filter.jsx";
 
 export default function Index({ projects, queryParams = {}, success }) {
+    const deleteProject = (project) => {
+        if (!window.confirm(`Are you sure you want to delete the project ${project.name}?`)) {
+            return;
+        }
+
+        router.delete(
+            route('project.destroy', project),
+            {
+                preserveScrollX: true,
+                preserveState: true,
+            }
+        );
+    }
+
     return (
         <>
             <AuthenticatedLayout
@@ -142,7 +156,7 @@ export default function Index({ projects, queryParams = {}, success }) {
                                                 <td className="px-3 py-2">{project.created_at}</td>
                                                 <td className="px-3 py-2">{project.due_date}</td>
                                                 <td className="px-3 py-2">{project.created_by.name}</td>
-                                                <td className="px-3 py-2">
+                                                <td className="px-3 py-2 text-nowrap">
                                                     <Link
                                                         href={route('project.edit', project)}
                                                         className=" font-medium text-blue-600 dark:text-blue-500 hover:underline mx-1"
@@ -150,12 +164,12 @@ export default function Index({ projects, queryParams = {}, success }) {
                                                         Edit
                                                     </Link>
 
-                                                    <Link
-                                                        href={route('project.destroy', project)}
+                                                    <button
+                                                        onClick={() => deleteProject(project)}
                                                         className=" font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
                                                     >
                                                         Delete
-                                                    </Link>
+                                                    </button>
                                                 </td>
                                             </tr>
                                         ))}

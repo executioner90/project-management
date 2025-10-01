@@ -22,6 +22,10 @@ class Project extends Model
         'updated_by',
     ];
 
+    protected $casts = [
+        'due_date' => 'date:Y-m-d',
+    ];
+
     public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);
