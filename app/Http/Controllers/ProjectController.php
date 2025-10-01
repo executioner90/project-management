@@ -100,7 +100,7 @@ class ProjectController extends Controller
         $project->update($validated);
 
         if ($image instanceof UploadedFile) {
-            Storage::disk('public')->delete("project/{$project->id}/{$project->getRawOriginal('image')}");
+            Storage::disk('public')->deleteDirectory("project/{$project->id}");
 
             $imageOriginalName = $image->getClientOriginalName();
             $imageOriginalName = preg_replace('/[^a-zA-Z0-9_.-]/', '_', $imageOriginalName);
@@ -120,7 +120,7 @@ class ProjectController extends Controller
         $name = $project->name;
 
         if ($project->image) {
-            Storage::disk('public')->delete("project/{$project->id}/{$project->getRawOriginal('image')}");
+            Storage::disk('public')->deleteDirectory("project/{$project->id}");
         }
 
         $project->delete();
