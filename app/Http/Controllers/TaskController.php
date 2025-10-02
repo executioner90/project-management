@@ -157,6 +157,25 @@ class TaskController extends Controller
             ]);
     }
 
+    public function myTasks(User $user, Request $request): Response
+    {
+        $this->validatedGetRequest($request);
+
+        $tasks = Task::query()
+            ->where('assigned_to', Auth::id())
+            ->when($request->input('name'), fn($query) => $query->where('name', 'like', '%' . $request->input('name') . '%'))
+            ->when($request->input('status'), fn($query) => $query->where('status', $request->input('status')))
+            ->when($request->input('sort_field'), fn($query) => $query->orderBy($request->input('sort_field'), $request->input('sort_direction')))
+            ->paginate(10)
+            ->onEachSide(1);
+
+        return Inertia::render('Task/Index')
+            ->with([
+                'tasks' => TaskResource::collection($tasks),
+                'queryParams' => $request->query() ?? null,
+            ]);
+    }
+
     protected function validatedGetRequest(Request $request): void {
         $request->validate([
             'name' => ['nullable', 'string'],
