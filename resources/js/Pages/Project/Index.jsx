@@ -154,7 +154,16 @@ export default function Index({ projects, queryParams = {}, success }) {
                                                 </span>
                                                 </td>
                                                 <td className="px-3 py-2">{project.created_at}</td>
-                                                <td className="px-3 py-2">{project.due_date}</td>
+                                                <td className={`py-2 px-3 ${
+                                                    new Date(project.due_date).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)
+                                                        ? "text-red-600" // past
+                                                        : new Date(project.due_date).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
+                                                            ? "text-yellow-600" // today
+                                                            : "text-green-600" // future
+                                                }`}
+                                                >
+                                                    {project.due_date}
+                                                </td>
                                                 <td className="px-3 py-2">{project.created_by.name}</td>
                                                 <td className="px-3 py-2 text-nowrap">
                                                     <Link

@@ -11,9 +11,20 @@ export default function Show({task}) {
     return (
         <>
             <AuthenticatedLayout header={
-                <h2 className="text-xl font-semibold leading-tight dark:bg-gray-800">
-                    {`Task ${task.name}`}
-                </h2>
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-semibold leading-tight dark:bg-gray-800">
+                        {`Task ${task.name}`}
+                    </h2>
+
+                    <Link
+                        href={route('task.edit', task)}
+                        className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600"
+                    >
+                        Edit
+                    </Link>
+                </div>
+
+
             }>
                 <Head title={`Task ${task.name}`} description={task.description} />
 
@@ -72,7 +83,16 @@ export default function Show({task}) {
                                 <div>
                                     <div>
                                         <label className="font-bold text-lg">Due Date</label>
-                                        <p className="mt-1 ">{task.due_date}</p>
+                                        <p className={`py-2 px-3 ${
+                                            new Date(task.due_date).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)
+                                                ? "text-red-600" // past
+                                                : new Date(task.due_date).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
+                                                    ? "text-yellow-600" // today
+                                                    : "text-green-600" // future
+                                        }`}
+                                        >
+                                            {task.due_date}
+                                        </p>
                                     </div>
 
                                     <div className="mt-4">

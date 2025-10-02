@@ -161,7 +161,16 @@ export default function Table({
                                                 </span>
                             </td>
                             <td className="px-3 py-2">{task.created_at}</td>
-                            <td className="px-3 py-2">{task.due_date}</td>
+                            <td className={`py-2 px-3 ${
+                                new Date(task.due_date).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)
+                                    ? "text-red-600" // past
+                                    : new Date(task.due_date).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
+                                        ? "text-yellow-600" // today
+                                        : "text-green-600" // future
+                            }`}
+                            >
+                                {task.due_date}
+                            </td>
                             <td className="px-3 py-2">{task.assigned_to.name}</td>
                             <td className="px-3 py-2">{task.created_by.name}</td>
                             <td className="px-3 py-2">

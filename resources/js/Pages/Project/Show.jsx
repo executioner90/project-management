@@ -1,5 +1,5 @@
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.jsx";
-import {Head} from "@inertiajs/react";
+import {Head, Link} from "@inertiajs/react";
 import {PROJECT_STATUS_CLASS_MAP, PROJECT_STATUS_TEXT_MAP} from "@/constants.jsx";
 import TaskTable from "@/Pages/Task/Table.jsx";
 
@@ -7,9 +7,19 @@ export default function Show({project, tasks, queryParams}) {
     return (
         <>
             <AuthenticatedLayout header={
-                <h2 className="text-xl font-semibold leading-tight dark:bg-gray-800">
-                    {`Project ${project.name}`}
-                </h2>
+                <div className="flex items-center justify-between">
+                    <h2 className="text-xl font-semibold leading-tight dark:bg-gray-800">
+                        {`Project ${project.name}`}
+                    </h2>
+
+                    <Link
+                        href={route('project.edit', project)}
+                        className="bg-emerald-500 py-1 px-3 text-white rounded shadow transition-all hover:bg-emerald-600"
+                    >
+                        Edit
+                    </Link>
+                </div>
+
             }>
                 <Head title={`Project ${project.name}`} description={project.description} />
 
@@ -57,7 +67,16 @@ export default function Show({project, tasks, queryParams}) {
                                 <div>
                                     <div>
                                         <label className="font-bold text-lg">Due Date</label>
-                                        <p className="mt-1 ">{project.due_date}</p>
+                                        <p className={`py-2 px-3 ${
+                                            new Date(project.due_date).setHours(0, 0, 0, 0) < new Date().setHours(0, 0, 0, 0)
+                                                ? "text-red-600" // past
+                                                : new Date(project.due_date).setHours(0, 0, 0, 0) === new Date().setHours(0, 0, 0, 0)
+                                                    ? "text-yellow-600" // today
+                                                    : "text-green-600" // future
+                                        }`}
+                                        >
+                                            {project.due_date}
+                                        </p>
                                     </div>
 
                                     <div className="mt-4">
