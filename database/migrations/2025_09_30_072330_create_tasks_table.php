@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('priority');
             $table->string('due_date')->nullable();
             $table->foreignId('created_by')->constrained('users');
-            $table->foreignId('updated_by')->constrained('users');
+            $table->foreignId('updated_by')->nullable()->constrained('users');
             $table->foreignId('assigned_to')->constrained('users');
             $table->foreignId('project_id')->constrained('projects');
             $table->timestamps();

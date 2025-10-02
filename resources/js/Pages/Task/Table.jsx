@@ -7,7 +7,7 @@ import {
     TASK_STATUS_TEXT_MAP
 } from "@/constants.jsx";
 import TableHead from "@/Components/TableHead.jsx";
-import {Link} from "@inertiajs/react";
+import {Link, router} from "@inertiajs/react";
 import Pagination from "@/Components/Pagination.jsx";
 import { searchFieldChanged, onKeyPress } from '@/Table/filter.jsx';
 
@@ -16,6 +16,20 @@ export default function Table({
     queryParams,
     hideProjectCol = false,
 }) {
+    const deleteTask = (task) => {
+        if (!window.confirm(`Are you sure you want to delete the project ${task.name}?`)) {
+            return;
+        }
+
+        router.delete(
+            route('task.destroy', task),
+            {
+                preserveScrollX: true,
+                preserveState: true,
+            }
+        );
+    }
+
     return (
         <>
             <div className="overflow-auto">
@@ -123,7 +137,13 @@ export default function Table({
                             {!hideProjectCol && (
                                 <td>{task.project.name}</td>
                             )}
-                            <td className="px-3 py-2">{task.name}</td>
+                            <th className="px-3 py-2 hover:underline">
+                                <Link
+                                    href={route('task.show', task)}
+                                >
+                                    {task.name}
+                                </Link>
+                            </th>
                             <td className="px-3 py-2">
                                                 <span className={
                                                     'px-2 py-1 rounded text-white ' +
@@ -152,12 +172,12 @@ export default function Table({
                                     Edit
                                 </Link>
 
-                                <Link
-                                    href={route('task.destroy', task)}
+                                <button
+                                    onClick={() => deleteTask(task)}
                                     className=" font-medium text-red-600 dark:text-red-500 hover:underline mx-1"
                                 >
                                     Delete
-                                </Link>
+                                </button>
                             </td>
                         </tr>
                     ))}

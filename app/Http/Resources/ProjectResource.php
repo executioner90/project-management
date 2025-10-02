@@ -16,13 +16,13 @@ class ProjectResource extends JsonResource
             'id' => $this->id,
             'name' => $this->name,
             'description' => $this->description,
-            'due_date' => Carbon::createFromDate($this->due_date)->format('d-m-Y'),
+            'due_date' => Carbon::createFromDate($this->due_date)->format('Y-m-d'),
             'status' => $this->status,
             'image' => $this->image,
             'created_by' => new UserResource($this->createdBy),
             'updated_by' => new UserResource($this->updatedBy),
-            'created_at' => Carbon::createFromDate($this->created_at)->format('d-m-Y'),
-            'updated_at' => Carbon::createFromDate($this->updated_at)->format('d-m-Y'),
+            'created_at' => Carbon::createFromDate($this->created_at)->format('Y-m-d'),
+            'updated_at' => Carbon::createFromDate($this->updated_at)->format('Y-m-d'),
         ];
     }
 }
